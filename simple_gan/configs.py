@@ -14,7 +14,7 @@ lr = 3e-4
 z_dim = 64
 img_dim = 28*28*1
 batch_size = 32
-epochs = 100
+epochs = 200
 
 
 
