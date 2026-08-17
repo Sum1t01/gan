@@ -1,0 +1,16 @@
+# Datasets -- re-downloadable, keep out of history
+dataset/
+
+# TensorBoard logs and training artifacts
+runs/
+samples/
+*.pth
+*.pt
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# macOS
+.DS_Store
