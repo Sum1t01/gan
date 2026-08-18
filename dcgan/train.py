@@ -17,6 +17,7 @@ device = configs.get_device()
 transforms = transforms.Compose(
     [
         transforms.Resize(configs.IMAGE_SIZE),
+        transforms.CenterCrop(configs.IMAGE_SIZE),
         transforms.ToTensor(),
         transforms.Normalize(
             [0.5 for _ in range(configs.CHANNELS_IMG)], [0.5 for _ in range(configs.CHANNELS_IMG)],
@@ -53,7 +54,7 @@ def train():
     for epoch in range(configs.NUM_EPOCHS):
         for batch_idx, (real, _) in enumerate(loader):
             real = real.to(device)
-            noise = torch.randn(configs.BATCH_SIZE, configs.Z_DIM, 1, 1).to(device)
+            noise = torch.randn(real.shape[0], configs.Z_DIM, 1, 1).to(device)
             fake = gen(noise)
 
             #Train Discriminator: max log(D(real)) + log(1- D(G(z)))
