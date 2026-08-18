@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 from Discriminator import Discriminator
@@ -10,6 +11,36 @@ def initialize_weights(model):
         elif isinstance(m, nn.BatchNorm2d):
             nn.init.normal_(m.weight.data, 1.0, 0.02)
             nn.init.constant_(m.bias.data, 0)
+
+
+def save_checkpoint(
+    name, epoch, step, gen, disc, opt_gen, opt_disc,
+    configs=None, checkpoint_dir="checkpoints",
+):
+    """Save both networks and both optimizers -- resuming a GAN needs all four,
+    since Adam's momentum buffers are part of the training state.
+
+    `configs` may be the configs module; its uppercase names are snapshotted so
+    the checkpoint stays interpretable after configs.py moves on.
+    """
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    path = os.path.join(checkpoint_dir, f"{name}.pth")
+    torch.save(
+        {
+            "epoch": epoch,
+            "step": step,
+            "gen": gen.state_dict(),
+            "disc": disc.state_dict(),
+            "opt_gen": opt_gen.state_dict(),
+            "opt_disc": opt_disc.state_dict(),
+            "configs": {} if configs is None else {
+                k: v for k, v in vars(configs).items() if k.isupper()
+            },
+        },
+        path,
+    )
+    print(f"  -> saved {path}")
+    return path
 
 
 def test():

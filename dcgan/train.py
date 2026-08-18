@@ -3,13 +3,14 @@ import torchvision
 import torch.nn as nn
 from Discriminator import Discriminator
 from Generator import Generator
-from utils import initialize_weights
+from utils import initialize_weights, save_checkpoint
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from  torch.utils.data import DataLoader
 import torch.optim as optim
 import configs
 from torch.utils.tensorboard import SummaryWriter
+from datetime import datetime
 
 device = configs.get_device()
 
@@ -98,6 +99,21 @@ def train():
 
 
         
+
+        # Periodic checkpoint: after every 10th completed epoch.
+        if (epoch + 1) % 10 == 0:
+            save_checkpoint(
+                f"epoch_{epoch + 1:03d}", epoch + 1, step,
+                gen, disc, opt_gen, opt_disc, configs,
+            )
+
+    # Final model, timestamped so consecutive runs never overwrite each other.
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    save_checkpoint(
+        f"final_{stamp}", configs.NUM_EPOCHS, step,
+        gen, disc, opt_gen, opt_disc, configs,
+    )
+
 
 if __name__ == "__main__":
     train()
