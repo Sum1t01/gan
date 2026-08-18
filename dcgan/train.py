@@ -24,7 +24,8 @@ transforms = transforms.Compose(
     ]
 )
 
-datasets = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
+# datasets = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
+datasets = datasets.ImageFolder(root="celeb_dataset", transform=transforms)
 
 loader = DataLoader(dataset=datasets, batch_size=configs.BATCH_SIZE, shuffle=True)
 
